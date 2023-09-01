@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      video {
+        width: 100%;
+        height: auto;
+        background-color: black;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <video autoplay loop muted id="select_heads">
+      <source src="assets/select_heads.mp4" />
+    </video>
+
+    <video autoplay loop muted id="select_tails" class="hidden">
+      <source src="assets/select_tails.mp4" />
+    </video>
+
+    <video id="flip_heads" class="hidden">
+      <source src="assets/flip_heads.mp4" />
+    </video>
+
+    <video id="flip_tails" class="hidden">
+      <source src="assets/flip_tails.mp4" />
+    </video>
+  </body>
+
+  <script>
+    let state = "picking";
+
+    const DOM = {
+      selectHeads: document.getElementById("select_heads"),
+      selectTails: document.getElementById("select_tails"),
+      flipHeads: document.getElementById("flip_heads"),
+      flipTails: document.getElementById("flip_tails"),
+    };
+
+    let selected = "heads";
+    function updateSelection() {
+      if (state !== "picking") return;
+      selected = selected === "heads" ? "tails" : "heads";
+      DOM.selectHeads.classList.toggle("hidden", selected !== "heads");
+      DOM.selectTails.classList.toggle("hidden", selected !== "tails");
+    }
+
+    function flipCoin() {
+      state = "flipping";
+      const result = Math.random() < 0.5 ? "heads" : "tails";
+
+      DOM.selectHeads.classList.add("hidden");
+      DOM.selectTails.classList.add("hidden");
+      DOM.flipHeads.classList.toggle("hidden", result !== "heads");
+      DOM.flipTails.classList.toggle("hidden", result !== "tails");
+
+      const video = result === "heads" ? DOM.flipHeads : DOM.flipTails;
+      video.load();
+      video.play();
+    }
+
+    window.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        updateSelection();
+      }
+
+      if (e.key === " " || e.key === "Enter") {
+        flipCoin();
+      }
+    });
+  </script>
+</html>
